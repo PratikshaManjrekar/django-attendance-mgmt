@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        .student-info {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .inline {
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .subject-dropdown {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .logout-button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <button class="logout-button" onclick="location.href='/';">Logout</button>
+
+        <div class="student-info">
+            <h1>Welcome, {{ student.name }}</h1>
+            <p class="inline">Roll Number: {{ student.roll_no }}</p>
+        </div>
+
+        <div class="subject-dropdown">
+            <label for="subjectDropdown">Select subject:</label>
+            <select name="subject" id="subjectDropdown" onchange="location = this.value;">
+                <option value="?">All subjects</option>
+                {% for subject in subjects %}
+                <option value="?subject={{ subject.id }}" {% if request.GET.subject == subject.id|stringformat:"s" %}selected{% endif %}>{{ subject.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <h2>Your Attendance</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Subject</th>
+                    <th>Time Slot</th>
+                    <th>Present</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in attendance_records %}
+                <tr>
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.subject }}</td>
+                    <td>{{ record.time_slot }}</td>
+                    <td>{{ record.is_present|yesno:"Present,Absent" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

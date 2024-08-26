@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mark Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .inline {
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="date"], select {
+            padding: 5px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+        }
+
+        button[type="button"] {
+            background-color: #f44336;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button[type="button"]:hover {
+            background-color: #d32f2f;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .container {
+            margin: 20px;
+        }
+        .logout-button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Mark Attendance</h1>
+            <button class="logout-button" onclick="location.href='/';">Logout</button>
+        </div>
+        
+        <div>
+            <span class="inline">Faculty ID: {{ faculty.faculty_id }}</span>
+            <span class="inline">Name: {{ faculty.name }}</span>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <label class="inline" for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+                
+                <label class="inline" for="time_slot">Time:</label>
+                <select id="time_slot" name="time_slot" class="inline">
+                    <option value="09:00-11:00">09:00-11:00</option>
+                    <option value="11:00-13:00">11:00-13:00</option>
+                    <option value="13:00-15:00">13:00-15:00</option>
+                    <option value="15:00-17:00">15:00-17:00</option>
+                </select>
+
+                <label class="inline" for="subject">Subjects:</label>
+                <select id="subject" name="subject" class="inline">
+                    {% for subject in subjects %}
+                        <option value="{{ subject.id }}">{{ subject.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Student Name</th>
+                        <th>Present</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.roll_no }}</td>
+                        <td>{{ student.name }}</td>
+                        <td><input type="checkbox" name="present_{{ student.id }}"></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div style="margin-top: 20px;">
+                <button type="submit">Save</button>
+                <button type="button" onclick="selectAll()">Select All</button>
+                <button type="button" onclick="deselectAll()">Deselect All</button>
+                <button type="button" onclick="cancel()">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function selectAll() {
+            let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = true);
+        }
+
+        function deselectAll() {
+            let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
+        }
+
+        function cancel() {
+            window.location.href = '/';  
+        }
+    </script>
+
+</body>
+</html>
