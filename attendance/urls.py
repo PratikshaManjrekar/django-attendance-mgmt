@@ -10,4 +10,5 @@ urlpatterns = [
     path('attendance/view/<int:faculty_id>',    views.view_attendance,   name='view_attendance'),
     path('dashboard/faculty/<int:faculty_id>/', views.faculty_dashboard, name='faculty_dashboard'),
     path('logout/',                             views.logout_view,       name='logout'),
+    path('faculty/<int:faculty_id>/options/',   views.faculty_options,   name='faculty_options'),
 ]

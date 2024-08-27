@@ -37,3 +37,6 @@ class Attendance(models.Model):
 
     class Meta:
         unique_together = ['student', 'subject', 'date', 'time_slot']
+
+    def __str__(self):
+        return self.student

@@ -25,10 +25,23 @@ def student_dashboard(request, student_id):
         return redirect('student_login')
     student             = get_object_or_404(Student, id=student_id)
     selected_subject_id = request.GET.get('subject')
+    selected_date       = request.GET.get('date')
+
+    sort_by             = request.GET.get('sort_by', 'date')
+    sort_order          = request.GET.get('sort_order', 'asc')
+
+    attendance_records  = Attendance.objects.filter(student=student)
     if selected_subject_id:
         attendance_records = Attendance.objects.filter(student=student, subject_id=selected_subject_id)
-    else:
-        attendance_records = Attendance.objects.filter(student=student)
+    if selected_date:
+        attendance_records = Attendance.objects.filter(student=student, date=selected_date)
+    if sort_by == 'date':
+        if sort_order == 'asc':
+            attendance_records = attendance_records.order_by('date')
+        else:
+            attendance_records = attendance_records.order_by('-date')
+    # else:
+    #     attendance_records = Attendance.objects.filter(student=student)
     subjects = student.subjects.all()
     context  = {
         'student': student,
@@ -67,7 +80,7 @@ def faculty_login(request):
             user    = authenticate(request, username=faculty.user.username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect(reverse(('faculty_dashboard'), args=[faculty.id]))
+                return redirect(reverse(('faculty_options'), args=[faculty.id]))
             else:
                 return render(request, 'faculty_login.html',{'error':'Invalid password'})
         except Faculty.DoesNotExist:
@@ -122,16 +135,47 @@ def view_attendance(request, faculty_id):
         faculty            = Faculty.objects.get(id=faculty_id)
         subjects           = faculty.subjects.all()
         students           = Student.objects.filter(subjects__in=subjects).distinct()
-        attendance_records = Attendance.objects.filter(
-            student__in    = students,
-            subject__in    = subjects
-        ).select_related('student', 'subject')
+        attendance_records = Attendance.objects.filter(subject__in=subjects)
+        
+        sort_by             = request.GET.get('sort_by', 'date')
+        sort_order          = request.GET.get('sort_order', 'asc')
+        if sort_by == 'date':
+            if sort_order == 'asc':
+                attendance_records = attendance_records.order_by('date')
+            else:
+                attendance_records = attendance_records.order_by('-date')
+
+        # Filtering by students
+        student_id = request.GET.get('student')
+        if student_id:
+            attendance_records = attendance_records.filter(student_id=student_id)
+        
+        # Filtering by date
+        date = request.GET.get('date')
+        if date:
+            attendance_records = attendance_records.filter(date=date)
+
+        # Filtering by subject
+        subject_id = request.GET.get('subject')
+        if subject_id:
+            attendance_records = attendance_records.filter(subject_id=subject_id)
+
     except Faculty.DoesNotExist:
         return redirect('faculty_login')
+
     return render(request, 'view_attendance.html', {
         'faculty'           : faculty,
         'attendance_records': attendance_records,
+        'students'          : students,
+        'subjects'          : subjects
     })
+
+
+def faculty_options(request, faculty_id):
+    if not request.user.is_authenticated:
+        return redirect('faculty_login')
+    faculty = Faculty.objects.get(id=faculty_id)
+    return render(request, 'faculty_options.html', {'faculty': faculty})
 
 
 def logout_view(request):

@@ -106,6 +106,8 @@
                 <option value="?subject={{ subject.id }}" {% if request.GET.subject == subject.id|stringformat:"s" %}selected{% endif %}>{{ subject.name }}</option>
                 {% endfor %}
             </select>
+            <label for="datePicker">Select Date: </label>
+            <input type="date" id="datePicker" name="date" value="{{ request.GET.date }}" onchange="location.href='?subject={{ request.GET.subject }}&date=' + this.value;">
         </div>
 
         <h2>Your Attendance</h2>

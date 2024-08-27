@@ -21,6 +21,45 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             max-width: 800px;
             margin: 20px auto;
+            overflow: hidden; /* Prevents overflow */
+        }
+
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-container div {
+            flex: 1;
+            min-width: 200px; /* Ensures a minimum width */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        select, input[type="date"], button {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+        }
+
+        button {
+            margin-top: 24px; /* Space between the input fields and button */
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
         }
 
         table {
@@ -62,6 +101,7 @@
             text-decoration: none;
             font-size: 16px;
         }
+
         .back-button:hover {
             background-color: #45a049;
         }
@@ -69,6 +109,41 @@
 </head>
 <body>
     <h1>Attendance Records</h1>
+
+    <form method="get" action="{% url 'view_attendance' faculty.id %}">
+        <div class="container">
+            <div class="filter-container">
+                <div>
+                    <label for="student">Student:</label>
+                    <select id="student" name="student">
+                        <option value="">All Students</option>
+                        {% for student in students %}
+                        <option value="{{ student.id }}" {% if request.GET.student == student.id|stringformat:"s" %}selected{% endif %}>{{ student.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date" value="{{ request.GET.date }}">
+                </div>
+
+                <div>
+                    <label for="subject">Subject:</label>
+                    <select id="subject" name="subject">
+                        <option value="">All Subjects</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject.id }}" {% if request.GET.subject == subject.id|stringformat:"s" %}selected{% endif %}>{{ subject.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <button type="submit">Filter</button>
+                </div>
+            </div>
+        </div>
+    </form>
 
     <div class="container">
         <table>
@@ -96,8 +171,7 @@
             </tbody>
         </table>
 
-        <a href="{% url 'faculty_dashboard' faculty.id %}" class="back-button">Back to Dashboard</a>
-        
+        <a href="{% url 'faculty_options' faculty.id %}" class="back-button">Back to Dashboard</a>
     </div>
 </body>
 </html>
