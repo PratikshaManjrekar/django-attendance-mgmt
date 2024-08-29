@@ -108,10 +108,11 @@
     </style>
 </head>
 <body>
-    <h1>Attendance Records</h1>
 
     <form method="get" action="{% url 'view_attendance' faculty.id %}">
         <div class="container">
+            <h1>Attendance Records for {{ faculty.name }}</h1>
+
             <div class="filter-container">
                 <div>
                     <label for="student">Student:</label>

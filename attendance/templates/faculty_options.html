@@ -51,6 +51,10 @@
     <button onclick="location.href='{% url 'faculty_dashboard' faculty.id %}';">Mark Attendance</button>
     <button onclick="location.href='{% url 'view_attendance' faculty.id %}';">View Attendance</button>
 
+    <div class="back-link">
+        <a href="{% url 'faculty_login' %}">Back to Login</a>
+    </div>
+
 </div>
 
 </body>

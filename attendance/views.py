@@ -37,9 +37,9 @@ def student_dashboard(request, student_id):
         attendance_records = Attendance.objects.filter(student=student, date=selected_date)
     if sort_by == 'date':
         if sort_order == 'asc':
-            attendance_records = attendance_records.order_by('date')
-        else:
             attendance_records = attendance_records.order_by('-date')
+        else:
+            attendance_records = attendance_records.order_by('date')
     # else:
     #     attendance_records = Attendance.objects.filter(student=student)
     subjects = student.subjects.all()
@@ -141,9 +141,9 @@ def view_attendance(request, faculty_id):
         sort_order          = request.GET.get('sort_order', 'asc')
         if sort_by == 'date':
             if sort_order == 'asc':
-                attendance_records = attendance_records.order_by('date')
-            else:
                 attendance_records = attendance_records.order_by('-date')
+            else:
+                attendance_records = attendance_records.order_by('date')
 
         # Filtering by students
         student_id = request.GET.get('student')
