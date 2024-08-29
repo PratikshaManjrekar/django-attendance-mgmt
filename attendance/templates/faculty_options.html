@@ -48,8 +48,15 @@
     <h1>Welcome, {{ faculty.name }}</h1>
     <h2>Select an option: </h2>
     
-    <button onclick="location.href='{% url 'faculty_dashboard' faculty.id %}';">Mark Attendance</button>
-    <button onclick="location.href='{% url 'view_attendance' faculty.id %}';">View Attendance</button>
+    <!-- <button onclick="location.href='{% url 'faculty_dashboard' faculty.id %}';">Mark Attendance</button>
+    <button onclick="location.href='{% url 'view_attendance' faculty.id %}';">View Attendance</button> -->
+
+    <a href="{% url 'faculty_dashboard' faculty.id %}">
+        <button type="button">Mark Attendance</button>
+    </a>
+    <a href="{% url 'view_attendance' faculty.id %}">
+        <button type="button">View Attendance</button>
+    </a>
 
     <div class="back-link">
         <a href="{% url 'faculty_login' %}">Back to Login</a>
